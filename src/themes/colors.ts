@@ -7,6 +7,7 @@ export const lightTheme = {
     accent: '#B8C6DC', // Light grayish-blue
     cardBackground: '#FFFFFF',
     shadow: '#E0E0E0',
+    grayColor: '#A0A0A0',
 };
 
 export const darkTheme = {
@@ -18,6 +19,7 @@ export const darkTheme = {
     accent: '#B8C6DC', // Light grayish-blue
     cardBackground: '#1B263B',
     shadow: '#141E30',
+    grayColor: '#555555',
 };
 
 

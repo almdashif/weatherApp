@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchWeatherFromAPI } from '../api/weatherApi';
+import logger from 'Utils/logger';
 
 export const fetchWeather = createAsyncThunk('weather/fetchWeather', async (city: string, { rejectWithValue }) => {
-  console.log({ city }, 'fetchWeather')
+
   try {
     const data = await fetchWeatherFromAPI(city);
-    // await AsyncStorage.setItem(`weather_${city}`, JSON.stringify(data));
-    console.log({ city, data }, 'fetchWeather')
+    logger.log({ city, data }, 'fetchWeather');
     return {
-      city,
+      city: data.address,
       temperature: data.currentConditions.temp,
       humidity: data.currentConditions.humidity,
       windSpeed: data.currentConditions.windspeed,
       condition: data.currentConditions.conditions,
       resolvedAddress: data.resolvedAddress,
       icon: data.currentConditions.icon,
-      forecast: data?.days.slice(0, 10),
+      forecast: data?.days.slice(0, 11),
+      timestamp: new Date().toISOString(),
     };
 
   } catch (error) {
@@ -34,11 +34,26 @@ const weatherSlice = createSlice({
     condition: '',
     loading: false,
     resolvedAddress: '',
-    error: null,
+    error: null as string | null,
     icon: '',
     forecast: [],
+    history: [] as Array<{
+      city: string;
+      resolvedAddress: string;
+      timestamp: string;
+      temperature: number | null;
+      condition: string;
+      icon: string;
+    }>,
   },
-  reducers: {},
+  reducers: {
+    setCity: (state, action) => {
+      state.city = action.payload;
+    },
+    clearHistory: (state) => {
+      state.history = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchWeather.pending, (state) => {
@@ -47,7 +62,25 @@ const weatherSlice = createSlice({
       })
       .addCase(fetchWeather.fulfilled, (state, action) => {
         state.loading = false;
-        Object.assign(state, action.payload);
+
+        const newEntry = {
+          city: action.payload.city,
+          resolvedAddress: action.payload.resolvedAddress,
+          temperature: action.payload.temperature,
+          condition: action.payload.condition,
+          icon: action.payload.icon,
+          timestamp: action.payload.timestamp,
+        };
+
+        state.history = [...(state.history || [])]; // Ensure history exists
+
+        const exists = state.history.some(entry => entry.city === action.payload.city);
+        if (!exists) {
+          state.history.unshift(newEntry);
+          if (state.history.length > 10) { state.history.pop(); } // Keep last 10
+        }
+
+        Object.assign(state, { ...action.payload, history: state.history });
       })
       .addCase(fetchWeather.rejected, (state, action) => {
         state.loading = false;
@@ -55,5 +88,5 @@ const weatherSlice = createSlice({
       });
   },
 });
-
+export const { setCity, clearHistory } = weatherSlice.actions;
 export default weatherSlice.reducer;

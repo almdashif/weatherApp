@@ -1,4 +1,5 @@
 export type RootStackParamList = {
-    AllReportScreen: { data: any };
+    AllReportScreen: undefined;
+    HomeScreen:undefined;
     // Add other screens here if needed
   };
