@@ -1,30 +1,42 @@
-import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, FlatList, StyleSheet, SafeAreaView, TouchableOpacity,  Modal } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearHistory } from '../redux/weatherSlice';
-import { useTheme } from '../themes/theme';
-import { weatherIcons } from '../Assets/Weather/weather';
+import { clearHistory } from '../redux/weatherSlice';import { weatherIcons } from '../Assets/Weather/weather';
 import { Commonheight, Commonsize, Commonwidth } from 'Utils/ResponsiveWidget';
 import { format } from 'date-fns';
+import { darkTheme, lightTheme } from '../themes/colors';
+import { RootState } from '../redux/store';
 
 const HistoryPage = () => {
     const dispatch = useDispatch();
     const { history } = useSelector((state: any) => state.weather);
-    const theme = useTheme();
+      const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
+      const theme = isDarkMode ? darkTheme : lightTheme;
+
+    const [visible, setVisible] = useState(false);
+
+    const clearAllHistory = () => {
+        dispatch(clearHistory());
+        toggleClearHistory();
+
+    };
+    const toggleClearHistory = () => {
+        setVisible(prev => !prev);
+    };
 
     return (
         <SafeAreaView style={[styles.fullFlex, { backgroundColor: theme.background }]}>
             <View style={[styles.fullFlex, { backgroundColor: theme.background, width: '90%', height: '100%', alignSelf: "center" }]}>
 
                 <View style={[styles.firstSubContainer]}>
-                    <Text style={[styles.cityTitle, { color: theme.text }]}>Search History</Text>
+                    <Text style={[styles.cityTitle, { color: theme.text }]}>Recent History</Text>
                 </View>
                 <View style={styles.thirdSubContainer}>
 
                     {history.length !== 0 && <View style={[styles.fullReportTitleContainer, { marginTop: Commonheight(10) }]}>
                         <Text style={[styles.reportHeading, { color: theme.text }]}>All Forecast</Text>
-                        <TouchableOpacity onPress={() => dispatch(clearHistory())}>
-                            <Text style={[styles.reportHeading, { color: theme.text }]}>Clear history</Text>
+                        <TouchableOpacity onPress={toggleClearHistory} style={[styles.clearbtn, { backgroundColor: theme.cardBackground }]}>
+                            <Text style={[styles.reportHeading, { fontSize: Commonsize(12), color: theme.text }]}>Clear history</Text>
                         </TouchableOpacity>
                     </View>}
                     {history.length === 0 ? (
@@ -40,12 +52,12 @@ const HistoryPage = () => {
                                         <Image source={item.icon ? weatherIcons[item.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.FRimgStyle} resizeMode="contain" />
                                         <Text style={[styles.FRDetailsHeading, { color: theme.text, fontSize: Commonsize(11), textAlign: "center" }]}>{format(item?.timestamp, 'yyyy-MM-dd')}</Text>
                                     </View>
-                                    <View>
+                                    <View style={{ maxWidth: "40%" }}>
                                         <Text style={[styles.FRDetailsValue, { color: theme.text, fontSize: Commonsize(26), textAlign: "center" }]}>{item?.temperature}<Text style={{ fontSize: Commonsize(16) }}>°c</Text></Text>
                                         <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText, textAlign: "center" }]}>{item?.condition}</Text>
                                     </View>
-                                    <View>
-                                        <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText, textAlign: "center", fontSize: Commonsize(14), marginBottom: Commonheight(4), }]}>{item?.city}</Text>
+                                    <View style={{ maxWidth: "35%" }}>
+                                        <Text numberOfLines={1} style={[styles.FRDetailsHeading, { color: theme.secondaryText, textAlign: "center", fontSize: Commonsize(14), marginBottom: Commonheight(4), }]}>{item?.city}</Text>
                                         <Text style={[styles.FRDetailsHeading, { color: theme.text, fontSize: Commonsize(11), textAlign: "center" }]}>{format(item?.timestamp, 'HH:mm a')}</Text>
 
                                     </View>
@@ -58,6 +70,23 @@ const HistoryPage = () => {
                     </View>)}
                 </View>
             </View>
+            <Modal transparent visible={visible} animationType="fade">
+                <View style={styles.overlay}>
+                    <View style={[styles.alertBox, { backgroundColor: theme.background }]}>
+                        <Text style={[styles.title, { color: theme.secondaryText }]}>Clear History Confirmation</Text>
+                        <Text style={[styles.message, { color: theme.text }]}>Are you sure you want to clear the history?</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={[styles.cancelButton,{backgroundColor:theme.text}]} onPress={toggleClearHistory}>
+                                <Text style={[styles.cancelText,{color:theme.background}]}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.okButton,{backgroundColor:theme.cardBackground}]} onPress={clearAllHistory}>
+                                <Text style={[styles.okText,{color:theme.text}]}>OK</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <TouchableOpacity onPress={toggleClearHistory} style={styles.overlayBackPress} />
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -128,13 +157,79 @@ const styles = StyleSheet.create({
     fullReportTitleContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: Commonheight(14), },
     reportHeading: { fontSize: Commonsize(15), fontWeight: '500', },
     fullReportText: { fontSize: Commonsize(13), },
-    fullReportSubCardContainer: { flexDirection: 'row', borderRadius: Commonsize(8), justifyContent: 'space-between', alignItems: 'center', marginRight: Commonwidth(10), width: '100%', marginBottom: Commonheight(10), height: Commonheight(100), paddingHorizontal: Commonsize(20) },
+    fullReportSubCardContainer: { flexDirection: 'row', borderRadius: Commonsize(8), justifyContent: 'space-between', alignItems: 'center', marginRight: Commonwidth(10), width: '100%', marginBottom: Commonheight(10), minHeight: Commonheight(80), paddingHorizontal: Commonsize(15), paddingVertical: Commonsize(10) },
     FRimgStyle: { width: Commonsize(50), height: Commonsize(50) },
     FRDetailsHeading: { fontSize: Commonsize(12), fontWeight: '500' },
     FRDetailsValue: { fontSize: Commonsize(18), fontWeight: '500' },
     fullReportCardContainer: { flexDirection: "row" },
     topBtns: { width: '100%', height: Commonheight(30), flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: Commonheight(10) },
-    themeStyle: { paddingLeft: Commonwidth(10) }
+    themeStyle: { paddingLeft: Commonwidth(10) },
+    clearbtn: { backgroundColor: 'pink', paddingVertical: Commonheight(5), paddingHorizontal: Commonwidth(15), borderRadius: Commonsize(4) },
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlayBackPress: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        position: 'absolute',
+    },
+    alertBox: {
+        width: 300,
+        backgroundColor: '#fff',
+        borderRadius: Commonsize(10),
+        padding: Commonsize(30),
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        zIndex: 99,
+    },
+    title: {
+        fontSize: Commonsize(16),
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    message: {
+        fontSize: Commonsize(14),
+        textAlign: 'center',
+        marginBottom: Commonsize(20),
+        color: '#555',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginTop:Commonheight(10)
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: '#ddd',
+        paddingVertical: Commonsize(10),
+        borderRadius: Commonsize(5),
+        alignItems: 'center',
+        marginRight: Commonsize(5),
+    },
+    cancelText: {
+        fontSize: Commonsize(14),
+        fontWeight: '500',
+    },
+    okButton: {
+        flex: 1,
+        paddingVertical: Commonsize(10),
+        borderRadius: Commonsize(5),
+        alignItems: 'center',
+        marginLeft: Commonsize(5),
+    },
+    okText: {
+        fontSize: Commonsize(14),
+        fontWeight: '500',
+    },
 });
 
 export default HistoryPage;

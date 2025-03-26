@@ -17,6 +17,7 @@ export const fetchWeather = createAsyncThunk('weather/fetchWeather', async (city
       icon: data.currentConditions.icon,
       forecast: data?.days.slice(0, 11),
       timestamp: new Date().toISOString(),
+      datetimeEpoch: data.currentConditions.datetimeEpoch,
     };
 
   } catch (error) {
@@ -37,6 +38,7 @@ const weatherSlice = createSlice({
     error: null as string | null,
     icon: '',
     forecast: [],
+    datetimeEpoch: null,
     history: [] as Array<{
       city: string;
       resolvedAddress: string;
@@ -70,6 +72,7 @@ const weatherSlice = createSlice({
           condition: action.payload.condition,
           icon: action.payload.icon,
           timestamp: action.payload.timestamp,
+          datetimeEpoch: action.payload.datetimeEpoch,
         };
 
         state.history = [...(state.history || [])]; // Ensure history exists

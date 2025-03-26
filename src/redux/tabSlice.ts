@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const tabSlice = createSlice({
     name: 'tab',
@@ -6,12 +6,9 @@ const tabSlice = createSlice({
         tab: 0,
     },
     reducers: {
-
         updateTab: (state, action) => {
-
             state.tab = action.payload;
         },
-
     },
 });
 

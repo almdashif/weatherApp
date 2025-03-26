@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { useTheme } from '../themes/theme';
 import { Commonheight, Commonsize, Commonwidth } from 'Utils/ResponsiveWidget';
 import { format, parse } from 'date-fns';
 import { weatherIcons } from '../Assets/Weather/weather';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'types/stackType';
+import { darkTheme, lightTheme } from '../themes/colors';
+import { Icon4 } from '../Utils/CommonIcons';
 
 
 const AllReportScreen = () => {
-    const weather = useSelector((state: RootState) => state.weather);
+    const weather = useSelector((state: RootState) => state.weather || []);
 
-    const theme = useTheme();
+
+    const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
+    const theme = isDarkMode ? darkTheme : lightTheme;
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -27,7 +30,7 @@ const AllReportScreen = () => {
     useEffect(() => {
         const today = new Date();
         setCurrentDate(today);
-        setShowDate(format(weather.forecast[0]?.datetime, 'MMMM dd, yyyy'));
+        setShowDate(format(weather?.forecast[0]?.datetime, 'MMMM dd, yyyy'));
         setCurrentTime(format(today, 'HH:mm:ss'));
     }, []);
 
@@ -41,6 +44,7 @@ const AllReportScreen = () => {
             <View style={[styles.fullFlex, { backgroundColor: theme.background, width: '90%', height: '100%', alignSelf: "center" }]}>
                 {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}> */}
                 <View style={[styles.firstSubContainer]}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.leftBtn}><Icon4 name='chevron-left' size={Commonsize(24)} color={theme.text} /></TouchableOpacity>
                     <Text style={[styles.cityTitle, { color: theme.text }]}>Forecast report</Text>
                 </View>
                 <View style={styles.secondSubContainer}>
@@ -83,7 +87,7 @@ const AllReportScreen = () => {
                                         <Text style={[styles.FRDetailsHeading, { color: theme.text, fontSize: Commonsize(14), marginBottom: Commonheight(4), textAlign: "center" }]}>{format(new Date(item?.datetime), "EEEE")}</Text>
                                         <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText, textAlign: "center" }]}>{item?.datetime}</Text>
                                     </View>
-                                    <View>
+                                    <View style={{ maxWidth: "45%" }}>
                                         <Text style={[styles.FRDetailsValue, { color: theme.text, fontSize: Commonsize(26), textAlign: "center" }]}>{item?.temp}<Text style={{ fontSize: Commonsize(16) }}>°c</Text></Text>
                                         <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText, textAlign: "center" }]}>{item?.conditions}</Text>
                                     </View>
@@ -101,11 +105,11 @@ const AllReportScreen = () => {
 
 const styles = StyleSheet.create({
     fullFlex: { flex: 1, width: '100%', height: '100%' },
-    firstSubContainer: { height: Commonheight(100), width: '100%', justifyContent: "center", alignItems: "center" },
+    firstSubContainer: { height: Commonheight(100), width: '100%', flexDirection: "row", justifyContent: "flex-start", alignItems: "center" },
     secondSubContainer: { height: Commonheight(120), width: '100%', marginBottom: Commonheight(10) },
     thirdSubContainer: { flex: 1, height: Commonheight(120), width: '100%', marginBottom: Commonheight(50) },
-
-    cityTitle: { fontSize: Commonsize(22), fontWeight: 'bold' },
+    leftBtn: { marginRight: Commonwidth(10) },
+    cityTitle: { flex: 1, fontSize: Commonsize(22), fontWeight: 'bold', textAlign: "center" },
     dateText: { fontSize: Commonsize(14), marginTop: Commonheight(4) },
     toggleBtnContainer: { flexDirection: 'row', borderRadius: Commonsize(4) },
     forecastBtn: { borderRadius: Commonsize(4) },

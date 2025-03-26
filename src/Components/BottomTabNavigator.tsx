@@ -1,9 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, ViewStyle, ColorValue } from 'react-native'
-import React from 'react'
-import Commoncolor from '../CommonFolder/CommonColor'
+import { StyleSheet, View, TouchableOpacity, ScrollView, ViewStyle, ColorValue } from 'react-native';
+import React from 'react';
 import { Commonheight, Commonsize, Commonwidth, deviceHeight } from '../Utils/ResponsiveWidget';
-import { useTheme } from '../themes/theme';
-
 
 interface IBottomtabNavigator {
     state: number;
@@ -23,9 +20,9 @@ interface IBottomtabNavigator {
 const BottomTabNavigator: React.FC<IBottomtabNavigator> = ({ renderTabs = [], state, tabNames = [], tabIcons, tabOnPress, style, bottomTabStyle,  activeBackgroundColor, inActiveBackgroundColor  }) => {
 
     return (
-        <View style={{ flex: 1, width: '100%', height: deviceHeight, }}>
+        <View style={styles.flex1}>
             <ScrollView keyboardShouldPersistTaps='never' scrollEnabled={false} nestedScrollEnabled>
-                <View style={{ flex: 1, width: '100%', height: deviceHeight - Commonheight(50), }}>
+                <View style={styles.componentStyle}>
                     {renderTabs[state]}
                 </View>
 
@@ -33,7 +30,7 @@ const BottomTabNavigator: React.FC<IBottomtabNavigator> = ({ renderTabs = [], st
                     {
                         tabNames.map((val, i) => {
                             return (
-                                <TouchableOpacity key={i?.toString()} disabled={state == i} onPress={tabOnPress[i]} style={[{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: state == i ? activeBackgroundColor : inActiveBackgroundColor,height:'100%', width:Commonwidth(80), borderRadius: Commonsize(50),}, { ...bottomTabStyle }]}>
+                                <TouchableOpacity key={i?.toString()} disabled={state == i} onPress={tabOnPress[i]} style={[{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: state == i ? activeBackgroundColor : inActiveBackgroundColor,height:'100%', width:Commonwidth(150), borderRadius: Commonsize(50),}, { ...bottomTabStyle }]}>
                                     {tabIcons[i]} </TouchableOpacity>
                             )
                         })
@@ -48,6 +45,8 @@ const BottomTabNavigator: React.FC<IBottomtabNavigator> = ({ renderTabs = [], st
 export default BottomTabNavigator
 
 const styles = StyleSheet.create({
+    flex1:{ flex: 1, width: '100%', height: deviceHeight },
+    componentStyle:{ flex: 1, width: '100%', height: deviceHeight - Commonheight(50), },
     bottomTabContainerStyle: {
         width: '100%', height: Commonheight(50), shadowColor: "#000",
         shadowOffset: {
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
         shadowRadius: 16.00,
 
         elevation: 24,
-        paddingHorizontal: Commonsize(20),
+        paddingHorizontal: Commonsize(30),
         paddingVertical: Commonsize(5),
         flexDirection: 'row',
         alignItems: 'center',
