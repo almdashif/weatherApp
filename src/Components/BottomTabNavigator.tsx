@@ -1,19 +1,7 @@
-import { StyleSheet, View, TouchableOpacity, ScrollView, ViewStyle, ColorValue } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, } from 'react-native';
 import React from 'react';
 import { Commonheight, Commonsize, Commonwidth, deviceHeight } from '../Utils/ResponsiveWidget';
-
-interface IBottomtabNavigator {
-    state: number;
-    tabNames?: string[]; // Assuming tab names are strings
-    tabIcons: React.ReactNode[]; // Assuming there are multiple tab icons, each can be a ReactNode
-    tabOnPress: (() => void)[];
-    style?: ViewStyle; // Same here, you can specify style type (e.g., ViewStyle)
-    bottomTabStyle?: ViewStyle; // Same as above, for bottom tab style
-
-    activeBackgroundColor: ColorValue; // The background color when the tab is active
-    inActiveBackgroundColor: ColorValue; // The background color when the tab is inactive
-    renderTabs: React.ReactNode[];
-}
+import { IBottomtabNavigator } from 'types/IBottomtabNavigator';
 
 
 

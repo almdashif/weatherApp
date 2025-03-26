@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, SafeAreaView, TouchableOpacity,  Modal } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, FlatList, StyleSheet, SafeAreaView, TouchableOpacity,  Modal, BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearHistory } from '../redux/weatherSlice';import { weatherIcons } from '../Assets/Weather/weather';
 import { Commonheight, Commonsize, Commonwidth } from 'Utils/ResponsiveWidget';
 import { format } from 'date-fns';
 import { darkTheme, lightTheme } from '../themes/colors';
 import { RootState } from '../redux/store';
+import { updateTab } from '../redux/tabSlice';
 
 const HistoryPage = () => {
     const dispatch = useDispatch();
@@ -14,6 +15,17 @@ const HistoryPage = () => {
       const theme = isDarkMode ? darkTheme : lightTheme;
 
     const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const backAction = () => {
+          dispatch(updateTab(0))
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+    
+        return () => backHandler.remove(); 
+      }, []);
 
     const clearAllHistory = () => {
         dispatch(clearHistory());

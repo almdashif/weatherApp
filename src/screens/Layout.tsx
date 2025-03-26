@@ -16,8 +16,8 @@ const Layout = () => {
     const dispatch = useDispatch<AppDispatch>();
     const tab = useSelector((state: RootState) => state.tab.tab);
 
-          const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
-          const theme = isDarkMode ? darkTheme : lightTheme;
+    const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
+    const theme = isDarkMode ? darkTheme : lightTheme;
 
 
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, ScrollView, TextInput, Alert, Platform, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, ScrollView, TextInput, Alert, Platform, RefreshControl, BackHandler, ToastAndroid } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchWeather } from '../redux/weatherSlice';
@@ -31,6 +31,8 @@ const HomeScreen = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [searchCity, setSearchCity] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [backPressCount, setBackPressCount] = useState(0);
+
 
   useEffect(() => {
     const today = new Date();
@@ -38,10 +40,30 @@ const HomeScreen = () => {
     requestLocationPermission();
 
 
-      console.log('Redux Theme State:', theme);
-
+    console.log(weather.loading,'weather.loading')
   }, []);
 
+  useEffect(() => {
+
+
+      const backAction = () => {
+        if (backPressCount === 1) {
+          BackHandler.exitApp();
+          return true;
+        }
+  
+        setBackPressCount(1);
+        ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+  
+        setTimeout(() => setBackPressCount(0), 2000); 
+  
+        return true;
+      };
+  
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+  
+      return () => backHandler.remove();
+    }, [backPressCount])
 
 
 
@@ -140,20 +162,20 @@ const HomeScreen = () => {
         >
           <View style={[styles.firstSubContainer]}>
             <View style={styles.topBtns}>
-              <Text style={[styles.cityTitle, { color: theme.text, marginRight: Commonwidth(40),fontSize: Commonsize(24),fontWeight:'bold' }]}>Climora</Text>
+              <Text style={[styles.cityTitle, { color: theme.text, marginRight: Commonwidth(40), fontSize: Commonsize(24), fontWeight: 'bold' }]}>Climora</Text>
 
               <View style={[styles.themeStyle, { flex: 1, flexDirection: 'row', backgroundColor: theme.cardBackground, alignItems: "center", justifyContent: "space-between", paddingHorizontal: Commonsize(10), borderRadius: Commonsize(20) }]}>
                 <TextInput
                   placeholder='search by city'
-                  placeholderTextColor={theme.secondaryText}
+                  placeholderTextColor={theme.placeholder}
                   style={[styles.searchInputStyle, { color: theme.secondaryText }]}
                   value={searchCity}
                   onChangeText={setSearchCity}
-                  returnKeyType="search" // Shows "Search" button in keyboard
+                  returnKeyType="search"
                   onSubmitEditing={searchByCity}
                 />
                 <TouchableOpacity onPress={searchByCity}>
-                  <Icon3 name="search" size={Commonsize(20)} color={theme.text} />
+                  <Icon3 name="search" size={Commonsize(20)} color={theme.placeholder} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={toggleThemes} style={styles.themeStyle}>
@@ -161,9 +183,9 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
             <Text style={[styles.cityTitle, { color: theme.text }]}>{weather.resolvedAddress}</Text>
-            {/* <Text style={[styles.cityTitle, { color: theme.text,fontSize:Commonsize(12) }]}>{weather.city}</Text> */}
+            {weather?.city?.toLowerCase() !== weather?.resolvedAddress?.toLowerCase() && <Text style={[styles.cityTitle, { color: theme.text, fontSize: Commonsize(12), marginVertical: Commonheight(2) }]}>{weather.city}</Text>}
             <Text style={[styles.dateText, { color: theme.secondaryText }]}>{currentDate}</Text>
-      
+
 
           </View>
           <View style={styles.secondSubContainer}>
@@ -203,13 +225,13 @@ const HomeScreen = () => {
                 horizontal={true}
                 keyExtractor={(item: any, i: number) => i.toString()}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => navigation.navigate('AllReportScreen')} style={[styles.fullReportSubCardContainer, { backgroundColor: theme.primary, marginRight: Commonwidth(10) }]}>
+                  <View  style={[styles.fullReportSubCardContainer, { backgroundColor: theme.primary, marginRight: Commonwidth(10) }]}>
                     <Image source={item.icon ? weatherIcons[item.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.FRimgStyle} resizeMode="contain" />
                     <View>
                       <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText }]}>{item?.datetime}</Text>
                       <Text style={[styles.FRDetailsValue, { color: theme.text }]}>{item?.temp}°c</Text>
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 )} />
             </View>
           </View>
@@ -222,22 +244,20 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
 
-  // modalContainer:{flex:1,backgroundColor:'rgba(0,0,0,0.5)',width:"100%",height:'100%'},
-  // subContainer:{width:'100%'}
   searchInputStyle: { fontSize: Commonsize(13), },
   fullFlex: { flex: 1, width: '100%', height: '100%' },
-  firstSubContainer: { height: Commonheight(170), width: '100%', justifyContent: "center", alignItems: "center", },
+  firstSubContainer: { height: Commonheight(180), width: '100%', justifyContent: "flex-start", alignItems: "center", },
   secondSubContainer: { flex: 1, alignItems: "center", },
   thirdContainer: { height: Commonheight(140), width: '100%', marginBottom: Commonheight(10) },
-  cityTitle: { fontSize: Commonsize(18), fontWeight: '500', textAlign: "center" },
-  dateText: { fontSize: Commonsize(14), marginTop: Commonheight(4) },
+  cityTitle: { fontSize: Commonsize(18), fontWeight: '500', textAlign: "center",marginBottom:Commonheight(5) },
+  dateText: { fontSize: Commonsize(14), marginTop: Commonheight(5) },
   toggleBtnContainer: { flexDirection: 'row', borderRadius: Commonsize(4) },
   forecastBtn: { borderRadius: Commonsize(4) },
   forecastText: { fontSize: Commonsize(12), paddingHorizontal: Commonwidth(20), paddingVertical: Commonheight(8) },
   airQltyBtn: { borderRadius: Commonsize(4) },
   airQltyText: { fontSize: Commonsize(12), paddingHorizontal: Commonwidth(20), paddingVertical: Commonheight(8) },
-  imageContainer: { width: Commonsize(250), height: Commonsize(260), justifyContent: 'center', alignItems: 'center' },
-  imgStyle: { width: Commonsize(250), height: Commonsize(250) },
+  imageContainer: { width: Commonsize(250), height: Commonsize(280), justifyContent: 'center', alignItems: 'center' },
+  imgStyle: { width: Commonsize(200), height: Commonsize(200) },
   weatherDetailsContainer: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap' },
   wDetailContainer: { width: '48%', justifyContent: 'center', alignItems: 'center', borderRadius: Commonsize(8), marginBottom: Commonheight(14), paddingVertical: Commonheight(10), paddingHorizontal: Commonwidth(14) },
   wDetailHeading: { fontSize: Commonsize(12), textAlign: "center" },
@@ -250,7 +270,7 @@ const styles = StyleSheet.create({
   FRDetailsHeading: { fontSize: Commonsize(12), fontWeight: '500' },
   FRDetailsValue: { fontSize: Commonsize(18), fontWeight: '500' },
   fullReportCardContainer: { flexDirection: "row" },
-  topBtns: { width: '100%', height: Commonheight(50), flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: Commonheight(20) },
+  topBtns: { width: '100%', height: Commonheight(50), flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: Commonheight(15), marginBottom: Commonheight(30) },
   themeStyle: { paddingLeft: Commonwidth(10) }
 });
 

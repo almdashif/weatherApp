@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Text, SafeAreaView, Image, StyleSheet, FlatList, TouchableOpacity, BackHandler } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { Commonheight, Commonsize, Commonwidth } from 'Utils/ResponsiveWidget';
 import { format, parse } from 'date-fns';
@@ -10,12 +10,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'types/stackType';
 import { darkTheme, lightTheme } from '../themes/colors';
 import { Icon4 } from '../Utils/CommonIcons';
+import { updateTab } from '../redux/tabSlice';
 
 
 const AllReportScreen = () => {
+    const dispatch = useDispatch();
     const weather = useSelector((state: RootState) => state.weather || []);
-
-
     const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
     const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -26,6 +26,18 @@ const AllReportScreen = () => {
     const [currentDate, setCurrentDate] = useState<string | Date>('');
     const [showDate, setShowDate] = useState('');
     const [currentTime, setCurrentTime] = useState('');
+
+
+    useEffect(() => {
+        const backAction = () => {
+            navigation.goBack()
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+        return () => backHandler.remove();
+    }, []);
 
     useEffect(() => {
         const today = new Date();
@@ -47,7 +59,7 @@ const AllReportScreen = () => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.leftBtn}><Icon4 name='chevron-left' size={Commonsize(24)} color={theme.text} /></TouchableOpacity>
                     <Text style={[styles.cityTitle, { color: theme.text }]}>Forecast report</Text>
                 </View>
-                <View style={styles.secondSubContainer}>
+                {todayHourlyForecast.length > 0 && <View style={styles.secondSubContainer}>
                     <View style={styles.fullReportTitleContainer}>
                         <Text style={[styles.reportHeading, { color: theme.text }]}>Today</Text>
                         <View>
@@ -70,7 +82,7 @@ const AllReportScreen = () => {
                                 </View>
                             )} />
                     </View>
-                </View>
+                </View>}
                 <View style={styles.thirdSubContainer}>
                     <View style={[styles.fullReportTitleContainer, { marginTop: Commonheight(10) }]}>
                         <Text style={[styles.reportHeading, { color: theme.text }]}>Upcoming forecast</Text>

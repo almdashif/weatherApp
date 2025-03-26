@@ -8,6 +8,7 @@ export const lightTheme = {
     cardBackground: '#FFFFFF',
     shadow: '#E0E0E0',
     grayColor: '#A0A0A0',
+    placeholder: "#B0B0B0",
 };
 
 export const darkTheme = {
@@ -20,6 +21,7 @@ export const darkTheme = {
     cardBackground: '#1B263B',
     shadow: '#141E30',
     grayColor: '#555555',
+    placeholder: "#888888",
 };
 
 
