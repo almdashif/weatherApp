@@ -71,7 +71,7 @@ const AllReportScreen = () => {
                             data={todayHourlyForecast}
                             horizontal={true}
                             keyExtractor={(item: any, i: number) => i.toString()}
-
+                            showsHorizontalScrollIndicator={false}
                             renderItem={({ item }) => (
                                 <View style={[styles.fullReportSubCardContainer, { backgroundColor: theme.cardBackground, marginRight: Commonwidth(10) }]}>
                                     <Image source={item.icon ? weatherIcons[item.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.FRimgStyle} resizeMode="contain" />

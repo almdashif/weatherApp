@@ -17,6 +17,7 @@ import logger from 'Utils/logger';
 import { darkTheme, lightTheme } from '../themes/colors';
 import { toggleTheme } from '../redux/themeSlice';
 import { Icon3, Icon4 } from '../Utils/CommonIcons';
+import SkeletonSkimmer from '../Components/Skimmer';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,30 +41,30 @@ const HomeScreen = () => {
     requestLocationPermission();
 
 
-    console.log(weather.loading,'weather.loading')
+    console.log(weather.loading, 'weather.loading')
   }, []);
 
   useEffect(() => {
 
 
-      const backAction = () => {
-        if (backPressCount === 1) {
-          BackHandler.exitApp();
-          return true;
-        }
-  
-        setBackPressCount(1);
-        ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
-  
-        setTimeout(() => setBackPressCount(0), 2000); 
-  
+    const backAction = () => {
+      if (backPressCount === 1) {
+        BackHandler.exitApp();
         return true;
-      };
-  
-      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-  
-      return () => backHandler.remove();
-    }, [backPressCount])
+      }
+
+      setBackPressCount(1);
+      ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+
+      setTimeout(() => setBackPressCount(0), 2000);
+
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => backHandler.remove();
+  }, [backPressCount])
 
 
 
@@ -73,7 +74,7 @@ const HomeScreen = () => {
     requestLocationPermission(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 1000);
+    }, 3000);
   }, []);
 
 
@@ -141,7 +142,7 @@ const HomeScreen = () => {
       if (city.trim()) {
         dispatch(fetchWeather(city));
       }
-    }, 800), // Wait 800ms before making the API request
+    }, 800), 
     [dispatch]
   );
 
@@ -155,87 +156,216 @@ const HomeScreen = () => {
   return (
     <View style={[styles.fullFlex, { backgroundColor: theme.background }]}>
       <View style={[styles.fullFlex, { backgroundColor: theme.background, width: '90%', height: '100%', alignSelf: "center" }]}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        >
-          <View style={[styles.firstSubContainer]}>
-            <View style={styles.topBtns}>
-              <Text style={[styles.cityTitle, { color: theme.text, marginRight: Commonwidth(40), fontSize: Commonsize(24), fontWeight: 'bold' }]}>Climora</Text>
-
-              <View style={[styles.themeStyle, { flex: 1, flexDirection: 'row', backgroundColor: theme.cardBackground, alignItems: "center", justifyContent: "space-between", paddingHorizontal: Commonsize(10), borderRadius: Commonsize(20) }]}>
-                <TextInput
-                  placeholder='search by city'
-                  placeholderTextColor={theme.placeholder}
-                  style={[styles.searchInputStyle, { color: theme.secondaryText }]}
-                  value={searchCity}
-                  onChangeText={setSearchCity}
-                  returnKeyType="search"
-                  onSubmitEditing={searchByCity}
+        {weather.loading ?
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          >
+            <View style={[styles.firstSubContainer]}>
+              <View style={[styles.topBtns, { justifyContent: 'space-between' }]}>
+                <SkeletonSkimmer
+                  width={80}
+                  height={40}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20 }}
                 />
-                <TouchableOpacity onPress={searchByCity}>
-                  <Icon3 name="search" size={Commonsize(20)} color={theme.placeholder} />
+
+                <SkeletonSkimmer
+                  width={200}
+                  height={40}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20 }}
+                />
+                <SkeletonSkimmer
+                  width={40}
+                  height={40}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20 }}
+                />
+              </View>
+              <SkeletonSkimmer
+                width={200}
+                height={20}
+                color={theme.skeletonBase}
+                highlightColor={theme.skeletonHighlight}
+                style={{ borderRadius: 20 }}
+              />
+              <SkeletonSkimmer
+                width={120}
+                height={20}
+                color={theme.skeletonBase}
+                highlightColor={theme.skeletonHighlight}
+                style={{ borderRadius: 20, marginVertical: 20 }}
+              />
+              <SkeletonSkimmer
+                width={220}
+                height={20}
+                color={theme.skeletonBase}
+                highlightColor={theme.skeletonHighlight}
+                style={{ borderRadius: 20 }}
+              />
+
+
+            </View>
+            <View style={styles.secondSubContainer}>
+
+              <SkeletonSkimmer
+                width={200}
+                height={120}
+                color={theme.skeletonBase}
+                highlightColor={theme.skeletonHighlight}
+                style={{ borderRadius: 20, marginVertical: 70 }}
+              />
+              <View style={styles.weatherDetailsContainer}>
+                <SkeletonSkimmer
+                  width={180}
+                  height={60}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20 }}
+                />
+                <SkeletonSkimmer
+                  width={180}
+                  height={60}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20 }}
+                />
+                <SkeletonSkimmer
+                  width={180}
+                  height={60}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20, marginTop: 10 }}
+                />
+                <SkeletonSkimmer
+                  width={180}
+                  height={60}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20, marginTop: 10 }}
+                />
+              </View>
+            </View>
+            <View style={styles.thirdContainer}>
+              <View style={styles.fullReportTitleContainer}>
+                <SkeletonSkimmer
+                  width={100}
+                  height={20}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20, marginTop: 10 }}
+                />
+                <SkeletonSkimmer
+                  width={100}
+                  height={20}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20, marginTop: 10 }}
+                />
+              </View>
+              <View style={styles.fullReportCardContainer}>
+                {Array.from({ length: 3 }).map((val, i) => (<SkeletonSkimmer
+                  key={i.toString()}
+                  width={150}
+                  height={60}
+                  color={theme.skeletonBase}
+                  highlightColor={theme.skeletonHighlight}
+                  style={{ borderRadius: 20, marginRight: 20, marginTop: 10 }}
+                />
+                ))}
+              </View>
+            </View>
+          </ScrollView>
+          :
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          >
+            <View style={[styles.firstSubContainer]}>
+              <View style={styles.topBtns}>
+                <Text style={[styles.cityTitle, { color: theme.text, marginRight: Commonwidth(40), fontSize: Commonsize(24), fontWeight: 'bold' }]}>Climora</Text>
+
+                <View style={[styles.themeStyle, { flex: 1, flexDirection: 'row', backgroundColor: theme.cardBackground, alignItems: "center", justifyContent: "space-between", paddingHorizontal: Commonsize(10), borderRadius: Commonsize(20) }]}>
+                  <TextInput
+                    placeholder='search by city'
+                    placeholderTextColor={theme.placeholder}
+                    style={[styles.searchInputStyle, { color: theme.secondaryText }]}
+                    value={searchCity}
+                    onChangeText={setSearchCity}
+                    returnKeyType="search"
+                    onSubmitEditing={searchByCity}
+                  />
+                  <TouchableOpacity onPress={searchByCity}>
+                    <Icon3 name="search" size={Commonsize(20)} color={theme.placeholder} />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={toggleThemes} style={styles.themeStyle}>
+                  <Icon4 name={isDarkMode ? 'moon' : 'sun'} size={Commonsize(18)} color={theme.text} />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity onPress={toggleThemes} style={styles.themeStyle}>
-                <Icon4 name={isDarkMode ? 'moon' : 'sun'} size={Commonsize(18)} color={theme.text} />
-              </TouchableOpacity>
-            </View>
-            <Text style={[styles.cityTitle, { color: theme.text }]}>{weather.resolvedAddress}</Text>
-            {weather?.city?.toLowerCase() !== weather?.resolvedAddress?.toLowerCase() && <Text style={[styles.cityTitle, { color: theme.text, fontSize: Commonsize(12), marginVertical: Commonheight(2) }]}>{weather.city}</Text>}
-            <Text style={[styles.dateText, { color: theme.secondaryText }]}>{currentDate}</Text>
+              <Text style={[styles.cityTitle, { color: theme.text }]}>{weather.resolvedAddress}</Text>
+              {weather?.city?.toLowerCase() !== weather?.resolvedAddress?.toLowerCase() && <Text style={[styles.cityTitle, { color: theme.text, fontSize: Commonsize(12), marginVertical: Commonheight(2),}]}>{weather?.city?.toUpperCase()}</Text>}
+              <Text style={[styles.dateText, { color: theme.secondaryText }]}>{currentDate}</Text>
 
 
-          </View>
-          <View style={styles.secondSubContainer}>
+            </View>
+            <View style={styles.secondSubContainer}>
 
-            <View style={styles.imageContainer}>
-              <Image source={weather.icon ? weatherIcons[weather.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.imgStyle} resizeMode="contain" />
+              <View style={styles.imageContainer}>
+                <Image source={weather.icon ? weatherIcons[weather.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.imgStyle} resizeMode="contain" />
+              </View>
+              <View style={styles.weatherDetailsContainer}>
+                <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Temp</Text>
+                  <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.temperature}°C</Text>
+                </View>
+                <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Humidity</Text>
+                  <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.humidity}%</Text>
+                </View>
+                <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>WindSpeed</Text>
+                  <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.windSpeed} km/h</Text>
+                </View>
+                <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Condition</Text>
+                  <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.condition}</Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.weatherDetailsContainer}>
-              <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Temp</Text>
-                <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.temperature}°C</Text>
+            <View style={styles.thirdContainer}>
+              <View style={styles.fullReportTitleContainer}>
+                <Text style={[styles.reportHeading, { color: theme.text }]}>Today</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('AllReportScreen')}>
+                  <Text style={[styles.fullReportText, { color: theme.primary }]}>View full report</Text>
+                </TouchableOpacity>
               </View>
-              <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Humidity</Text>
-                <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.humidity}%</Text>
-              </View>
-              <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>WindSpeed</Text>
-                <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.windSpeed} km/h</Text>
-              </View>
-              <View style={[styles.wDetailContainer, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.wDetailHeading, { color: theme.secondaryText }]}>Condition</Text>
-                <Text style={[styles.wDetailValue, { color: theme.text }]}>{weather.condition}</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.thirdContainer}>
-            <View style={styles.fullReportTitleContainer}>
-              <Text style={[styles.reportHeading, { color: theme.text }]}>Today</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('AllReportScreen')}>
-                <Text style={[styles.fullReportText, { color: theme.primary }]}>View full report</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.fullReportCardContainer}>
-              <FlatList
-                data={weather.forecast}
-                horizontal={true}
-                keyExtractor={(item: any, i: number) => i.toString()}
-                renderItem={({ item }) => (
-                  <View  style={[styles.fullReportSubCardContainer, { backgroundColor: theme.primary, marginRight: Commonwidth(10) }]}>
-                    <Image source={item.icon ? weatherIcons[item.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.FRimgStyle} resizeMode="contain" />
-                    <View>
-                      <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText }]}>{item?.datetime}</Text>
-                      <Text style={[styles.FRDetailsValue, { color: theme.text }]}>{item?.temp}°c</Text>
+              <View style={styles.fullReportCardContainer}>
+                <FlatList
+                  data={weather.forecast}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item: any, i: number) => i.toString()}
+                  renderItem={({ item }) => (
+                    <View style={[styles.fullReportSubCardContainer, { backgroundColor: theme.primary, marginRight: Commonwidth(10) }]}>
+                      <Image source={item.icon ? weatherIcons[item.icon] : require('../Assets/Images/weather/cloudy.png')} style={styles.FRimgStyle} resizeMode="contain" />
+                      <View>
+                        <Text style={[styles.FRDetailsHeading, { color: theme.secondaryText }]}>{item?.datetime}</Text>
+                        <Text style={[styles.FRDetailsValue, { color: theme.text }]}>{item?.temp}°c</Text>
+                      </View>
                     </View>
-                  </View>
-                )} />
+                  )} />
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        }
+
       </View>
 
     </View>
@@ -249,7 +379,7 @@ const styles = StyleSheet.create({
   firstSubContainer: { height: Commonheight(180), width: '100%', justifyContent: "flex-start", alignItems: "center", },
   secondSubContainer: { flex: 1, alignItems: "center", },
   thirdContainer: { height: Commonheight(140), width: '100%', marginBottom: Commonheight(10) },
-  cityTitle: { fontSize: Commonsize(18), fontWeight: '500', textAlign: "center",marginBottom:Commonheight(5) },
+  cityTitle: { fontSize: Commonsize(18), fontWeight: '500', textAlign: "center", marginBottom: Commonheight(5) },
   dateText: { fontSize: Commonsize(14), marginTop: Commonheight(5) },
   toggleBtnContainer: { flexDirection: 'row', borderRadius: Commonsize(4) },
   forecastBtn: { borderRadius: Commonsize(4) },

@@ -1,97 +1,92 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Weather App Assessment 🚀
 
-# Getting Started
+#### Welcome to your new React Native project! Follow the steps below to set up, build, and run your app smoothly.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+🛠 Prerequisites
 
-## Step 1: Start Metro
+Ensure you have the following installed before proceeding:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+#### Node.js: Minimum version 18 
 
-```sh
-# Using npm
-npm start
+#### Java Development Kit (JDK): Minimum version 17 
 
-# OR using Yarn
-yarn start
+#### Android Studio: Required for Android development 
+
+#### Xcode (Mac only): Required for iOS development
+
+
+React Native CLI: Install globally using:
+```js
+npm install -g react-native-cli
+```
+📞 Installation
+
+Clone this repository and install dependencies:
+
+# Clone the repository
+git clone https://github.com/almdashif/weatherApp/tree/main
+cd weatherApp
+
+# Install dependencies
+```js
+npm install  # or yarn install
 ```
 
-## Step 2: Build and run your app
+🚀 Running the App
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+1️⃣ Start Metro (JavaScript bundler for React Native)
 
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```js
+npm start  # or yarn start
 ```
 
-### iOS
+2️⃣ Run the app on Android
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+npx react-native run-android
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+3️⃣ Run the app on iOS (Mac only)
 
-```sh
+# Install CocoaPods (if not installed)
+```js
 bundle install
+
+bundle exec pod install --project-directory=ios
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
+# Run the iOS app
+```js
+npx react-native run-ios
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+🔄 Reloading the App
 
-```sh
-# Using npm
-npm run ios
+Android: Press R twice or open the Dev Menu
 
-# OR using Yarn
-yarn ios
+Cmd + M (macOS)
+
+Ctrl + M (Windows/Linux)
+
+iOS: Press R in the iOS Simulator
+
+❌ Troubleshooting
+
+🚀 Metro Bundler Issues
+
+### If Metro fails to start, try clearing the cache:
+```js
+npx react-native start --reset-cache
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+📱 Android Issues
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+#### Ensure your emulator/device is connected:
 
-## Step 3: Modify your app
+```js
+adb devices
+```
 
-Now that you have successfully run the app, let's make changes!
+🍏 iOS Build Issues
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+#### Make sure Xcode and CocoaPods are installed properly.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.

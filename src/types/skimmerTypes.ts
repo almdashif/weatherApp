@@ -1,3 +1,5 @@
+import { ViewStyle } from "react-native";
+
 export enum EanimationType {
     Linear = 'linear',
     Bounce = 'bounce',
@@ -11,8 +13,8 @@ export interface ISkeletonSkimmerProps {
   height?: number;
   color?: string;
   highlightColor?: string;
-  style?: object;
-  animationStyle?: object;
+  style?: ViewStyle;
+  animationStyle?: ViewStyle;
   duration?: number;
   animationType?: EanimationType
 }

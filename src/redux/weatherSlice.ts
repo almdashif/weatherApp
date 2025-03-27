@@ -33,7 +33,7 @@ const weatherSlice = createSlice({
     humidity: null,
     windSpeed: null,
     condition: '',
-    loading: false,
+    loading: true,
     resolvedAddress: '',
     error: null as string | null,
     icon: '',
