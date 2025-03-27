@@ -28,6 +28,16 @@ Clone this repository and install dependencies:
 git clone https://github.com/almdashif/weatherApp/tree/main
 cd weatherApp
 
+# 🌍 Environment Setup
+
+Create a `.env` file in the project root and add your Visual Crossing Weather API Key:
+
+WEATHER_API_KEY=your_api_key_here
+
+```js
+🔹 Get your API key from Visual Crossing and replace your_api_key_here.
+```
+
 # Install dependencies
 ```js
 npm install  # or yarn install
